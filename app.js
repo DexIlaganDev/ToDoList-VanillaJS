@@ -46,7 +46,7 @@ class UI {
   static validateField(fieldStringValue){
     let message = "CANNOT ADD BLANK TODO!";
     if ( fieldStringValue == '' || fieldStringValue.trim() == '')  {
-      UI.handleToast( message, "red").showToast();
+      UI.showAlert( message, "red");
       return false;
     }
     return true;
@@ -59,9 +59,9 @@ class UI {
     }
   }
 
-  static handleToast(mess,stringOfClass){
+  static showAlert(mess,stringOfClass){
     let validationToast = new Toast(mess,stringOfClass);
-    return validationToast;
+    validationToast.showToast();
   }
 
 }
@@ -89,6 +89,9 @@ document.getElementById('addToDo')
   //Add todo to UI
   UI.addToDoToList({title : inputFieldValue});
 
+  //Show success message
+  UI.showAlert('List Added Successfully', 'green');
+
   //Clear fields
   UI.clearFields();
 
@@ -99,6 +102,9 @@ document.getElementById('addToDo')
  document.getElementById('collectionContainer')
  .addEventListener('click', (e)=>{
   UI.deleteTodo(e.target);
+
+  //Show removed list message
+  UI.showAlert('List Removed', 'lime');
 
  });
 
