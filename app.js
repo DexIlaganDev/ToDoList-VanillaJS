@@ -45,8 +45,11 @@ class UI {
 
   static validateField(fieldStringValue){
     let message = "CANNOT ADD BLANK TODO!";
-    if ( fieldStringValue == '' || fieldStringValue.trim() == '')  
-    M.toast({html: message, classes : "red"});    
+    if ( fieldStringValue == '' || fieldStringValue.trim() == '')  {
+      M.toast({html: message, classes : "red"});  
+      return false;
+    }
+    return true;
   }
   
   static deleteTodo(el){
@@ -74,7 +77,7 @@ document.getElementById('addToDo')
   const inputFieldValue = document.getElementById("inputField").value;
 
   //Validate ToDo
-  UI.validateField( inputFieldValue )
+  if ( !UI.validateField( inputFieldValue ) ) return;
 
   //Intantiate Book
   const newTodo = new ToDo(inputFieldValue);
