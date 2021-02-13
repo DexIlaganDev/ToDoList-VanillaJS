@@ -11,17 +11,13 @@ class UI {
   static displayLists(){
 
     //pretend this is from localStorage
-    const storedLists = [
-      {title : "TODO 1"},
-      {title : "TODO 2"},
-      {title : "TODO 3"},
-    ];
-
+    const storedLists = Store.getTodos();
     const todos = storedLists;
 
     todos.forEach( (todo)=>{
       UI.addToDoToList(todo);
     });
+
 
 
   }//end displayLists
@@ -56,6 +52,10 @@ class UI {
     if( el.classList.contains('removeList') ){
       let parent = el.parentElement.parentElement.parentElement.remove();
       console.log(parent);
+
+      //Show removed list message
+      UI.showAlert('List Removed', 'lime');
+
     }
   }
 
@@ -68,11 +68,36 @@ class UI {
 
 
 // Store Class : Handles Storage
+class Store{
+
+  static getTodos(){
+    let todos;
+    if( localStorage.getItem('todos') === null ){
+      todos = []
+    }else{
+      todos = JSON.parse( localStorage.getItem('todos') );
+    }
+
+    return todos;
+  }
+
+  static addTodo(todo){
+    const todos = Store.getTodos();
+    todos.push( todo );
+
+    localStorage.setItem( 'todos', JSON.stringify( todos ) );
+
+  }
+
+  static removeTodo(){
+
+  }
+
+}
 
 
 //Event : Display TODOS
 document.addEventListener('DOMContentLoaded', UI.displayLists );
-
 
 //Event : Add a Book
 document.getElementById('addToDo')
@@ -89,6 +114,9 @@ document.getElementById('addToDo')
   //Add todo to UI
   UI.addToDoToList({title : inputFieldValue});
 
+  //Add to storage
+  Store.addTodo( {title: inputFieldValue} );
+
   //Show success message
   UI.showAlert('List Added Successfully', 'green');
 
@@ -103,8 +131,8 @@ document.getElementById('addToDo')
  .addEventListener('click', (e)=>{
   UI.deleteTodo(e.target);
 
-  //Show removed list message
-  UI.showAlert('List Removed', 'lime');
+  //remove from LocalStorage
+
 
  });
 
