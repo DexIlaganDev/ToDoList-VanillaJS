@@ -17,6 +17,28 @@ addToDoBtn.addEventListener('click', ()=>{
 
   collectionContainer.appendChild(listItem);
 
+  //clear input field after adding to list
+  inputField.value = "";
 
+  
 
 });
+
+
+class MakeToDoList {
+
+  list;
+
+  constructor(){ 
+    this.list = [];
+  }
+
+  addToList(){
+
+  }
+
+  removeFromList(){
+
+  }
+
+}
