@@ -46,7 +46,7 @@ class UI {
   static validateField(fieldStringValue){
     let message = "CANNOT ADD BLANK TODO!";
     if ( fieldStringValue == '' || fieldStringValue.trim() == '')  {
-      M.toast({html: message, classes : "red"});  
+      UI.handleToast( message, "red").showToast();
       return false;
     }
     return true;
@@ -57,7 +57,11 @@ class UI {
       let parent = el.parentElement.parentElement.parentElement.remove();
       console.log(parent);
     }
-  
+  }
+
+  static handleToast(mess,stringOfClass){
+    let validationToast = new Toast(mess,stringOfClass);
+    return validationToast;
   }
 
 }
@@ -97,3 +101,21 @@ document.getElementById('addToDo')
   UI.deleteTodo(e.target);
 
  });
+
+
+ //Toast Class
+class Toast{
+
+  classString;
+  toastMessage;
+
+  constructor (toastMessage, classString){
+    this.toastMessage = toastMessage;
+    this.classString = classString;
+  }
+
+  showToast () {
+    M.toast({html: this.toastMessage, classes : this.classString});  
+  }
+
+}
