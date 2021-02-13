@@ -1,12 +1,15 @@
 // TODO Class: Represents a TODO
 class ToDo{
-  constructor(title){
+  constructor(title, id = 0){
     this.title = title;
+    this.id = id;
   }
 }
 
 // UI Class : Handle UI Tasks
 class UI {
+
+  static todosContainer =[];
 
   static displayLists(){
 
@@ -16,6 +19,7 @@ class UI {
 
     todos.forEach( (todo)=>{
       UI.addToDoToList(todo);
+      UI.todosContainer.push(todo);
     });
 
 
@@ -25,7 +29,7 @@ class UI {
   static addToDoToList(todo){
     const list = document.getElementById('collectionContainer');
     const listItem = document.createElement('li');
-    listItem.className = "collection-item";
+    listItem.className = `collection-item collection-item-${todo.id}`;
     listItem.innerHTML = `<div>${todo.title}
                             <a href="#!" class="secondary-content">
                             <i class="material-icons removeList">remove</i>
@@ -50,8 +54,9 @@ class UI {
   
   static deleteTodo(el){
     if( el.classList.contains('removeList') ){
-      let parent = el.parentElement.parentElement.parentElement.remove();
-      console.log(parent);
+      let parent = el.parentElement.parentElement.parentElement
+      .remove();
+
 
       //Show removed list message
       UI.showAlert('List Removed', 'lime');
@@ -73,7 +78,7 @@ class Store{
   static getTodos(){
     let todos;
     if( localStorage.getItem('todos') === null ){
-      todos = []
+      todos = [];
     }else{
       todos = JSON.parse( localStorage.getItem('todos') );
     }
@@ -83,13 +88,26 @@ class Store{
 
   static addTodo(todo){
     const todos = Store.getTodos();
-    todos.push( todo );
-
+    todos.push(todo);
     localStorage.setItem( 'todos', JSON.stringify( todos ) );
 
   }
 
-  static removeTodo(){
+  static removeTodo(el,id){
+
+    let todos = Store.getTodos();
+    if( el.classList.contains('removeList') ){
+      let classCollectionNumber = el.parentElement.parentElement.parentElement.classList[1].toString();
+      const indexWeWant = classCollectionNumber.split('-')[2];
+      todos.forEach( (todo, index)=>{
+        if( todo.id === indexWeWant ){
+          todos.splice(index,1);
+        }
+        
+      });
+      console.log(todos);
+      localStorage.setItem('todos', JSON.stringify(todos));
+    }
 
   }
 
@@ -108,14 +126,14 @@ document.getElementById('addToDo')
   //Validate ToDo
   if ( !UI.validateField( inputFieldValue ) ) return;
 
-  //Intantiate Book
-  const newTodo = new ToDo(inputFieldValue);
+  //Intantiate Todo
+  const newTodo = new ToDo(inputFieldValue, (++UI.todosContainer.length).toString() );
 
   //Add todo to UI
-  UI.addToDoToList({title : inputFieldValue});
+  UI.addToDoToList(newTodo);
 
   //Add to storage
-  Store.addTodo( {title: inputFieldValue} );
+  Store.addTodo( newTodo );
 
   //Show success message
   UI.showAlert('List Added Successfully', 'green');
@@ -131,8 +149,8 @@ document.getElementById('addToDo')
  .addEventListener('click', (e)=>{
   UI.deleteTodo(e.target);
 
-  //remove from LocalStorage
-
+  //remove todo from LocalStorage
+  Store.removeTodo(e.target);
 
  });
 
